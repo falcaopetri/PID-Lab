@@ -1,0 +1,15 @@
+extends ../public/bootstrap/_bootstrap
+
+append styles
+    link(rel="stylesheet", href="/stylesheets/style.css")
+
+block body
+    include header
+    
+    .container-fluid
+      .main-content
+        block content
+      .sidebar
+        block sidebar
+        
+    include footer

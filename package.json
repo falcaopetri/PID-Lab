@@ -1,0 +1,25 @@
+{
+    "name": "pidPlotter",
+    "version": "0.0.0",
+    "private": true,
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "preinstall": "node bin/preinstall",
+        "start": "NODE_ENV=development nodemon ./bin/www"
+    },
+    "author": "Antonio Carlos Falcão Petri <falcaopetri@gmail.com>",
+    "keywords": ["pid controller", "data visualization", "data analytics"],
+    "license": "MIT",
+    "dependencies": {
+        "body-parser": "~1.13.2",
+        "cookie-parser": "~1.3.5",
+        "express-session ": "*",
+        "debug": "~2.2.0",
+        "express": "~4.13.1",
+        "jade": "~1.11.0",
+        "morgan": "~1.6.1",
+        "serve-favicon": "~2.3.0",
+        "stylus": "0.42.3",
+        "socket.io": "*"
+    }
+}

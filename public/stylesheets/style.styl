@@ -1,0 +1,35 @@
+// Source spinning:
+// http://stackoverflow.com/a/31205524
+// http://jsfiddle.net/oshybystyi/v04ag5ch/4/
+.has-spinner .fa-refresh {
+  opacity: 0;
+  max-width: 0;
+
+  -webkit-transition: opacity 0.25s, max-width 0.45s;
+  -moz-transition: opacity 0.25s, max-width 0.45s;
+  -o-transition: opacity 0.25s, max-width 0.45s;
+  transition: opacity 0.25s, max-width 0.45s; /* Duration fixed since we animate additional hidden width */
+}
+
+.has-spinner.active {
+  cursor:progress;
+}
+
+.has-spinner.active .fa-refresh {
+  opacity: 1;
+  max-width: 50px; /* More than it will ever come, notice that this affects on animation duration */
+}
+
+.fa-refresh {
+    margin-left: 5px;
+}
+
+#refresh {
+  width: 90px;
+}
+
+.disabled {
+    // Source: http://stackoverflow.com/a/25776393
+    pointer-events: none;
+    opacity: 0.4;
+}

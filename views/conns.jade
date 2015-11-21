@@ -1,0 +1,15 @@
+.conns
+    .col-sm-9.col-sm-offset-3.col-md-10.col-md-offset-2.main
+        h2.sub-header Connections available
+        .table-responsive
+            table.table.table-striped#conns_avail
+                thead
+                    tr
+                        th COM Name
+                        th PNP ID
+                        th Manufacturer
+                tbody
+                    
+        button.btn.btn-info(type='button', class='has-spinner')#refresh
+            | Refresh
+            i(class="fa fa-refresh fa-spin")
