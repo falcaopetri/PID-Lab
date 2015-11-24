@@ -3,81 +3,79 @@
 /**
  * Module dependencies.
  */
-
 var app = require('../app');
 var debug = require('debug')('pidPlotter:server');
 var http = require('http');
 
+var config = require('_/config').server;
 
 /**
  * Get port from environment and store in Express.
  */
-
-var port = normalizePort(process.env.PORT || '8000');
+var port = normalizePort(process.env.PORT || config.port);
 app.set('port', port);
 
 /**
  * Create HTTP server.
  */
-
 var server = http.createServer(app);
 
 /**
  * Listen on provided port, on all network interfaces.
  */
-
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
 
 var io = require("socket.io")(server);
 
-function partial(func /*, 0..n args */) {
-  var args = Array.prototype.slice.call(arguments, 1);
-  return function() {
-    var allArguments = args.concat(Array.prototype.slice.call(arguments));
-    return func.apply(this, allArguments);
-  };
-}
-
-var handleClient = function(socket) {
+io.on("connection", function(socket) {
     // we've got a client connection
-    console.log("handle");
-
-    // var interval = setInterval(function() {
-    //     socket.emit("detect", pidController.auto_detect());
-    // }, 1000);
+    console.log("new client connetion");
 
     socket.on('request_connections_available', function () {
-        console.log("request_connections_available received");
-        // app.pidController.auto_detect(partial(socket.emit, "update_connections_available"));
         // TODO change callback
-        app.pidController.auto_detect(socket.emit.bind(socket));
-        // socket.emit("update_connections_available", {'data':'data'});
+        var update_connections_available = function (data) {
+            socket.emit.bind(socket)("update_connections_available", data);
+        }
+        app.pidController.auto_detect(update_connections_available);
     });
 
     socket.on("disconnect", function() {
 
     });
 
-    socket.on("request_connection", function(data) {
+    socket.on("request_connection", function(data, fn) {
         console.log("received request to connect to: ", data.connName);
         app.pidController.connect(data.connName,
-            function () {
-                //success
+            function (message) {
+                // TODO
+                // socket.to(data.connName).emit("new_controller_data", {message});
+                socket.emit("new_controller_data", {message});
             },
-            function () {
-                //error
+            function (err) {
+                fn(!err);
             }
         );
     });
-};
-io.on("connection", handleClient);
+});
+
+io.sockets.on('connection', function(socket){
+    // Source: http://stackoverflow.com/a/16475058
+    socket.on('subscribe', function(room) {
+        console.log('joining room', room);
+        socket.join(room);
+    });
+
+    socket.on('unsubscribe', function(room) {
+        console.log('leaving room', room);
+        socket.leave(room);
+    });
+});
 
 /**
  * Normalize a port into a number, string, or false.
  */
-
 function normalizePort(val) {
     var port = parseInt(val, 10);
 
@@ -97,7 +95,6 @@ function normalizePort(val) {
 /**
  * Event listener for HTTP server "error" event.
  */
-
 function onError(error) {
     if (error.syscall !== 'listen') {
         throw error;
@@ -123,7 +120,6 @@ function onError(error) {
 /**
  * Event listener for HTTP server "listening" event.
  */
-
 function onListening() {
     var addr = server.address();
     var bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;

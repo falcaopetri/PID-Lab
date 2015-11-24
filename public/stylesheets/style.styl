@@ -33,3 +33,25 @@
     pointer-events: none;
     opacity: 0.4;
 }
+
+div.disabled {
+    display: none
+}
+
+// Source: https://gist.github.com/mbostock/1642874
+svg {
+  font: 10px sans-serif;
+}
+
+.line {
+  fill: none;
+  stroke: #000;
+  stroke-width: 1.5px;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}

@@ -13,22 +13,16 @@ block sidebar
 	.row
 		.col-sm-3.col-md-2.sidebar
 			ul.nav.nav-sidebar
-				li.active
-					a(href='#')
-						| Connection
-						span.sr-only (current)
+				li.active.connect
+					a(href='#').connect Connection
+				li.overview
+					a(href='#', class="disabled").connected Overview
 				li
-					a(href='#', class="disabled") Overview
+					a(href='#', class="disabled").connected#analytics_btn Analytics
+					include analytics
 				li
-					a(href='#', class="disabled") Analytics
-				li
-					a(href='#', class="disabled") Export
+					a(href='#', class="disabled").connected Export
 
 block content
 	include conns
-	.overview
-		//- include overview
-	.analytics
-		//- include analytics
-	.export
-		//- include export
+	include overview

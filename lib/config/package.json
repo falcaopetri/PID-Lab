@@ -1,0 +1,13 @@
+{
+  "name": "config",
+  "version": "0.0.0",
+  "description": "Global configuration module",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "Antonio Carlos Falcão Petri <falcaopetri@gmail.com>",
+  "keywords": ["config", "configuration", "general"],
+  "license": "MIT"
+}
