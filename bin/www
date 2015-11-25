@@ -36,13 +36,15 @@ io.on("connection", function(socket) {
     socket.on('request_connections_available', function () {
         // TODO change callback
         var update_connections_available = function (data) {
+            console.log("should emit update_connections_available");
             socket.emit.bind(socket)("update_connections_available", data);
         }
         app.pidController.auto_detect(update_connections_available);
     });
 
     socket.on("disconnect", function() {
-
+        // TODO disconnect the associated pid controller
+        console.log("client disconnected");
     });
 
     socket.on("request_connection", function(data, fn) {
@@ -51,7 +53,7 @@ io.on("connection", function(socket) {
             function (message) {
                 // TODO
                 // socket.to(data.connName).emit("new_controller_data", {message});
-                socket.emit("new_controller_data", {message});
+                socket.emit("new_controller_data", { message });
             },
             function (err) {
                 fn(!err);

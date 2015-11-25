@@ -1,7 +1,8 @@
 // Source spinning:
 // http://stackoverflow.com/a/31205524
 // http://jsfiddle.net/oshybystyi/v04ag5ch/4/
-.has-spinner .fa-refresh {
+.has-spinner .fa-refresh,
+.has-spinner .fa-spinner {
   opacity: 0;
   max-width: 0;
 
@@ -15,12 +16,14 @@
   cursor:progress;
 }
 
-.has-spinner.active .fa-refresh {
+.has-spinner.active .fa-refresh,
+.has-spinner.active .fa-spinner {
   opacity: 1;
   max-width: 50px; /* More than it will ever come, notice that this affects on animation duration */
 }
 
-.fa-refresh {
+.fa-refresh,
+.fa-spinner {
     margin-left: 5px;
 }
 

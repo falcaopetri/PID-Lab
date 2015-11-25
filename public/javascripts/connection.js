@@ -1,7 +1,8 @@
 var socket = io.connect("http://localhost:8000");
 var request_pending = false;
 var svg, path;
-socket.on("connect", function () {
+
+socket.on("connect", function() {
     console.log("Connected!");
 
     socket.on('update_connections_available', updateConnectionsAvailable);
@@ -10,7 +11,12 @@ socket.on("connect", function () {
 });
 
 var data = new Array(35).fill(0);;
-var margin = {top: 20, right: 20, bottom: 20, left: 40},
+var margin = {
+        top: 20,
+        right: 20,
+        bottom: 20,
+        left: 40
+    },
     width = 960 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
 
@@ -23,8 +29,12 @@ var y = d3.scale.linear()
     .range([height, 0]);
 
 var line = d3.svg.line()
-    .x(function(d, i) { return x(i); })
-    .y(function(d, i) { return y(d); });
+    .x(function(d, i) {
+        return x(i);
+    })
+    .y(function(d, i) {
+        return y(d);
+    });
 
 function newControllerData(dat) {
 
@@ -34,19 +44,19 @@ function newControllerData(dat) {
         data.push(dat.message.input);
         console.log("data:");
         console.log(data);
+        
         // redraw the line, and then slide it to the left
         path
-              .attr("d", line)
-              .attr("transform", null)
+            .attr("d", line)
+            .attr("transform", null)
             .transition()
-              .duration(500)
-              .ease("linear")
-              .attr("transform", "translate(" + x(-1) + ",0)")
-              .each("end", newControllerData, dat);
+            .duration(500)
+            .ease("linear")
+            .attr("transform", "translate(" + x(-1) + ",0)")
+            .each("end", newControllerData, dat);
+
         // pop the old data point off the front
-        // if (data.length > 100) {
-            data.shift();
-        // }
+        data.shift();
     }
 }
 
@@ -56,52 +66,61 @@ function updateConnectionsAvailable(conns) {
     $('#conns_avail > tbody').empty();
     var table = "";
     if (conns.length == 0) {
+        // TODO
         table += "<tr>";
         table += "<td>No connections available</td>";
         table += "<td></td>";
         table += "<td></td>";
         table += "<td></td>";
+        table += "<td></td>";
         table += "/<tr>";
-    }
-    else {
+    } else {
         for (var i = 0; i < conns.length; i++) {
             var conn = conns[i];
             table += "<tr>";
+            table += "<td>" + conn.comType + "</td>";
             table += "<td class=\"comName\">" + conn.comName + "</td>";
             table += "<td>" + conn.pnpId + "</td>";
             table += "<td>" + conn.manufacturer + "</td>";
-            table += "<td><button type=\"button\" class=\"btn btn-sm btn-success connect\">Connect</button></td>";
+            table += "<td><button type=\"button\" class=\"btn btn-sm btn-success connect has-spinner\">Connect<i class=\"fa fa-spinner fa-spin\"/></button></td>";
             table += "</tr>";
         }
     }
     $('#conns_avail > tbody').append(table);
-    $('.connect').on('click', function() {
+    $('button.connect').on('click', function() {
         // Source: http://stackoverflow.com/a/14460485
+        $(this).toggleClass('active');
+        $(this).blur();
         var connName = $(this).closest("tr").find("td.comName").text();
-        connect(connName);
+        connect(connName, this);
     });
 
     request_pending = false;
     loading_anim();
 };
 
-function connect(connName) {
+function connect(connName, connect_btn) {
+    // TODO connect_btn
     console.log(connName);
-    socket.emit("request_connection", {"connName" : connName}, function (success) {
+    socket.emit("request_connection", {
+        "connName": connName
+    }, function(success) {
         if (success) {
             console.log("successful connection");
             request_overview_page();
             socket.emit('subscribe', connName);
-        }
-        else {
+        } else {
             // problem connecting
             console.error("connection failed");
         }
+        $(connect_btn).toggleClass('active');
     });
 }
 
 function loading_anim() {
     $('#refresh').toggleClass('active');
+    $('#refresh').blur();
+    $('#conns_avail > tbody').toggleClass('disabled');
 };
 
 $('#refresh').on('click', function() {
@@ -135,11 +154,11 @@ $(document).ready(function() {
     svg = d3.select(".plot").append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
-      .append("g")
+        .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
     svg.append("defs").append("clipPath")
         .attr("id", "clip")
-      .append("rect")
+        .append("rect")
         .attr("width", width)
         .attr("height", height);
     svg.append("g")
@@ -151,7 +170,7 @@ $(document).ready(function() {
         .call(d3.svg.axis().scale(y).orient("left"));
     path = svg.append("g")
         .attr("clip-path", "url(#clip)")
-      .append("path")
+        .append("path")
         .datum(data)
         .attr("class", "line")
         .attr("d", line);

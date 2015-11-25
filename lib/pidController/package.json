@@ -7,9 +7,6 @@
     "scripts": {
         "test": "mocha"
     },
-    "dependencies": {
-        "serialport": "*"
-    },
     "keywords": ["controller"],
     "author": "Antonio Carlos Falcão Petri <falcaopetri@gmail.com>",
     "license": "MIT"
