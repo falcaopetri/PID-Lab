@@ -7,6 +7,9 @@
   "scripts": {
     "test": "mocha"
   },
+  "dependencies": {
+      "winston": "*"
+  },
   "author": "Antonio Carlos Falcão Petri <falcaopetri@gmail.com>",
   "keywords": ["config", "configuration", "general"],
   "license": "MIT"

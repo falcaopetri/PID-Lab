@@ -1,6 +1,5 @@
 var socket = io.connect("http://localhost:8000");
 var request_pending = false;
-var svg, path;
 
 socket.on("connect", function() {
     console.log("Connected!");
@@ -10,53 +9,26 @@ socket.on("connect", function() {
     request_connections_available();
 });
 
-var data = new Array(35).fill(0);;
-var margin = {
-        top: 20,
-        right: 20,
-        bottom: 20,
-        left: 40
-    },
-    width = 960 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
-
-var n = 40;
-var x = d3.scale.linear()
-    .domain([0, n - 1])
-    .range([0, width]);
-var y = d3.scale.linear()
-    .domain([-1, 1])
-    .range([height, 0]);
-
-var line = d3.svg.line()
-    .x(function(d, i) {
-        return x(i);
-    })
-    .y(function(d, i) {
-        return y(d);
-    });
-
 function newControllerData(dat) {
-
     // push a new data point onto the back
-    console.log(dat.message);
-    if (dat.message.input) {
-        data.push(dat.message.input);
-        console.log("data:");
-        console.log(data);
-        
+    if (dat.message) {
+        data.input.push(dat.message.input);
+        data.output.push(dat.message.output);
+        data.setpoint.push(dat.message.setpoint);
+
         // redraw the line, and then slide it to the left
-        path
-            .attr("d", line)
-            .attr("transform", null)
-            .transition()
-            .duration(500)
-            .ease("linear")
-            .attr("transform", "translate(" + x(-1) + ",0)")
-            .each("end", newControllerData, dat);
+        redraw(plots.input.path, line, newControllerData, dat);
+        redraw(plots.input.area, area, newControllerData, dat);
+
+        redraw(plots.setpoint.path, line, newControllerData, dat);
+
+        redraw(plots.output.path, line, newControllerData, dat);
+        redraw(plots.output.area, area, newControllerData, dat);
 
         // pop the old data point off the front
-        data.shift();
+        for (var key in data) {
+            data[key].shift();
+        }
     }
 }
 
@@ -66,7 +38,6 @@ function updateConnectionsAvailable(conns) {
     $('#conns_avail > tbody').empty();
     var table = "";
     if (conns.length == 0) {
-        // TODO
         table += "<tr>";
         table += "<td>No connections available</td>";
         table += "<td></td>";
@@ -80,8 +51,8 @@ function updateConnectionsAvailable(conns) {
             table += "<tr>";
             table += "<td>" + conn.comType + "</td>";
             table += "<td class=\"comName\">" + conn.comName + "</td>";
-            table += "<td>" + conn.pnpId + "</td>";
-            table += "<td>" + conn.manufacturer + "</td>";
+            table += "<td>" + (conn.pnpId ? conn.pnpId : "-") + "</td>";
+            table += "<td>" + (conn.manufacturer ? conn.manufacturer : "-") + "</td>";
             table += "<td><button type=\"button\" class=\"btn btn-sm btn-success connect has-spinner\">Connect<i class=\"fa fa-spinner fa-spin\"/></button></td>";
             table += "</tr>";
         }
@@ -118,9 +89,15 @@ function connect(connName, connect_btn) {
 }
 
 function loading_anim() {
-    $('#refresh').toggleClass('active');
-    $('#refresh').blur();
-    $('#conns_avail > tbody').toggleClass('disabled');
+    if (request_pending) {
+        $('#refresh').addClass('active');
+        $('#conns_avail > tbody').addClass('disabled');
+    }
+    else {
+        $('#refresh').removeClass('active');
+        $('#refresh').blur();
+        $('#conns_avail > tbody').removeClass('disabled');
+    }
 };
 
 $('#refresh').on('click', function() {
@@ -129,6 +106,7 @@ $('#refresh').on('click', function() {
 
 $('#analytics_btn').on('click', function() {
     $('#analytics').toggleClass("disabled");
+    $('li.analytics').toggleClass("active");
 });
 
 function request_overview_page() {
@@ -150,28 +128,3 @@ function request_connections_available() {
         socket.emit('request_connections_available');
     }
 }
-$(document).ready(function() {
-    svg = d3.select(".plot").append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
-        .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-    svg.append("defs").append("clipPath")
-        .attr("id", "clip")
-        .append("rect")
-        .attr("width", width)
-        .attr("height", height);
-    svg.append("g")
-        .attr("class", "x axis")
-        .attr("transform", "translate(0," + y(0) + ")")
-        .call(d3.svg.axis().scale(x).orient("bottom"));
-    svg.append("g")
-        .attr("class", "y axis")
-        .call(d3.svg.axis().scale(y).orient("left"));
-    path = svg.append("g")
-        .attr("clip-path", "url(#clip)")
-        .append("path")
-        .datum(data)
-        .attr("class", "line")
-        .attr("d", line);
-});
