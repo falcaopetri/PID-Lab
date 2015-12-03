@@ -4,7 +4,7 @@
     "description": "Connection module to encapsulate different PID Controller's connections.",
     "main": "index.js",
     "dependencies": {
-        "serialport": "*"
+        "serialport": "^2.0.0"
     },
     "keywords": [],
     "author": "Antonio Carlos Falcão Petri <falcaopetri@gmail.com>",
