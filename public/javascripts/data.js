@@ -6,7 +6,9 @@ var data = {
     // TODO is this use of Array correct?
     input: new Array(40).fill(0),
     output: new Array(40).fill(0),
-    setpoint: new Array(40).fill(0)
+    setpoint: new Array(40).fill(0),
+    // TODO bad idea:
+    pid: [new Array(40).fill(0), new Array(40).fill(0), new Array(40).fill(0)]
 };
 
 var margin = {
@@ -26,7 +28,7 @@ var x = d3.scale.linear()
     .domain([0, n - 1])
     .range([0, width]);
 var y = d3.scale.linear()
-    .domain([-1, 1])
+    .domain([0, 270])
     .range([height, 0]);
 
 var line = d3.svg.line()
@@ -42,7 +44,7 @@ var area = d3.svg.area()
     .x(function(d, i) {
         return x(i);
     })
-    .y0(height/2)
+    .y0(height)
     .y1(function(d, i) {
         return y(d);
     })
@@ -60,29 +62,37 @@ function redraw(path, func, method, data) {
         .each("end", method, data);
 }
 
-$(document).ready(function() {
-    // TODO generator function to svgs and paths
-    // CTRL+C - CTRL+V code:
-    svgs.input = d3.select(".plot #input").append("svg")
+function new_svg(selector) {
+    svg = d3.select(selector).append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-    svgs.input.append("defs").append("clipPath")
+    svg.append("defs").append("clipPath")
         .attr("id", "clip")
         .append("rect")
         .attr("width", width)
         .attr("height", height);
-    svgs.input.append("g")
+    return svg;
+}
+
+function set_axes(svg) {
+    svg.append("g")
         .attr("class", "x axis")
         .attr("transform", "translate(0," + y(0) + ")")
         .call(d3.svg.axis().scale(x).orient("bottom"));
-    svgs.input.append("g")
+    svg.append("g")
         .attr("class", "y axis")
         .call(d3.svg.axis().scale(y).orient("left"));
+}
+
+$(document).ready(function() {
+    // TODO generator function to svgs and paths
+    // -improved with new_svg()-
+    // CTRL+C - CTRL+V code:
+    svgs.input = new_svg(".plot #input");
 
     plots.input = {};
-
     plots.input.top = svgs.input.append("g")
         .attr("clip-path", "url(#clip)");
 
@@ -98,7 +108,6 @@ $(document).ready(function() {
         .attr('stroke', 'black');
 
     plots.setpoint = {};
-
     plots.setpoint.top = plots.input.top;
 
     plots.setpoint.path = plots.setpoint.top.append("path")
@@ -106,27 +115,11 @@ $(document).ready(function() {
         .attr("class", "line")
         .attr("d", line)
         .attr('stroke', 'red');
-
-    svgs.output = d3.select(".plot #output").append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
-        .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-    svgs.output.append("defs").append("clipPath")
-        .attr("id", "clip")
-        .append("rect")
-        .attr("width", width)
-        .attr("height", height);
-    svgs.output.append("g")
-        .attr("class", "x axis")
-        .attr("transform", "translate(0," + y(0) + ")")
-        .call(d3.svg.axis().scale(x).orient("bottom"));
-    svgs.output.append("g")
-        .attr("class", "y axis")
-        .call(d3.svg.axis().scale(y).orient("left"));
+    set_axes(svgs.input);
+    
+    svgs.output = new_svg(".plot #output")
 
     plots.output = {};
-
     plots.output.top = svgs.output.append("g")
         .attr("clip-path", "url(#clip)");
 
@@ -140,4 +133,30 @@ $(document).ready(function() {
         .attr("class", "line")
         .attr("d", line)
         .attr('stroke', 'black');
+    set_axes(svgs.output);
+
+    svgs.pid = new_svg(".plot #pid");
+
+    plots.pid = {};
+    plots.pid.top = svgs.pid.append("g")
+        .attr("clip-path", "url(#clip)");
+
+    plots.pid.p = plots.pid.top.append("path")
+        .datum(data.pid[0])
+        .attr("class", "line")
+        .attr("d", line)
+        .attr('stroke', 'red');
+
+    plots.pid.i = plots.pid.top.append("path")
+        .datum(data.pid[1])
+        .attr("class", "line")
+        .attr("d", line)
+        .attr('stroke', 'blue');
+
+    plots.pid.d = plots.pid.top.append("path")
+        .datum(data.pid[2])
+        .attr("class", "line")
+        .attr("d", line)
+        .attr('stroke', 'green');
+    set_axes(svgs.pid);
 });
