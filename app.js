@@ -4,12 +4,12 @@ var favicon = require('serve-favicon');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-var logger = require('_/config').logger;
+var logger = require('@config').logger;
 var routes = require('./routes/index');
 
 var app = express();
 
-app.pidController = require('_/pidController');
+app.pidController = require('@pidController');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

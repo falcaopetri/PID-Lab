@@ -1,5 +1,5 @@
 var expect = require("chai").expect;
-var config = require("_/config");
+var config = require("@config");
 
 describe("app", function() {
 
