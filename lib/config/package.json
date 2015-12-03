@@ -4,9 +4,6 @@
   "description": "Global configuration module",
   "main": "index.js",
   "private": true,
-  "scripts": {
-    "test": "mocha"
-  },
   "dependencies": {
       "winston": "*"
   },

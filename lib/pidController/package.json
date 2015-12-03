@@ -4,9 +4,6 @@
     "description": "PID Controller",
     "main": "index.js",
     "private": true,
-    "scripts": {
-        "test": "mocha"
-    },
     "keywords": ["controller"],
     "author": "Antonio Carlos Falcão Petri <falcaopetri@gmail.com>",
     "license": "MIT"

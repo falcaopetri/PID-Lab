@@ -3,9 +3,6 @@
     "version": "0.0.0",
     "description": "Connection module to encapsulate different PID Controller's connections.",
     "main": "index.js",
-    "scripts": {
-        "test": "mocha"
-    },
     "dependencies": {
         "serialport": "*"
     },
