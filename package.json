@@ -3,11 +3,11 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "test": "mocha bin/test",
+    "test": "NODE_ENV=test mocha bin/test",
     "preinstall": "node bin/preinstall",
     "postinstall": "node bin/postinstall.js",
     "start": "NODE_ENV=development nodemon ./bin/www",
-    "coverage": "istanbul cover _mocha -- -R spec bin/test"
+    "coverage": "NODE_ENV=test istanbul cover _mocha -- -R spec bin/test"
   },
   "author": "Antonio Carlos Falcão Petri <falcaopetri@gmail.com>",
   "keywords": [
