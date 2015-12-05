@@ -11,3 +11,38 @@
         h4(class="sub-header") PID
     #parameters_controller
         h4(class="sub-header") Parameters Controller
+        
+        div(class="table-responsive")
+            table(class="table table-bordered")#pid_table
+                tr
+                    th P
+                    th I
+                    th D
+                tr#pid_curr_values
+                    td
+                        label.p
+                    td
+                        label.i
+                    td
+                        label.d
+                tr#pid_new_values
+                    td
+                        label.p
+                    td
+                        label.i
+                    td
+                        label.d
+                tr.up
+                    td
+                        i(class="fa fa-arrow-circle-up fa-3x")
+                    td
+                        i(class="fa fa-arrow-circle-up fa-3x")
+                    td
+                        i(class="fa fa-arrow-circle-up fa-3x")
+                tr.down
+                    td
+                        i(class="fa fa-arrow-circle-down fa-3x")
+                    td
+                        i(class="fa fa-arrow-circle-down fa-3x")
+                    td
+                        i(class="fa fa-arrow-circle-down fa-3x")

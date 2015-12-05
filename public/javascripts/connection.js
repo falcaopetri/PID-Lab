@@ -12,40 +12,13 @@ socket.on("connect", function() {
 function newControllerData(dat) {
     // push a new data point onto the back
     if (dat.message) {
-        data.input.push(dat.message.input);
-        data.output.push(dat.message.output);
-        data.setpoint.push(dat.message.setpoint);
-
-        // TODO CTRL+C - CTRL+V is bad anywhere
-        data.pid[0].push(dat.message.pid[0]);
-        data.pid[1].push(dat.message.pid[1]);
-        data.pid[2].push(dat.message.pid[2]);
-
-        // redraw the line, and then slide it to the left
-        redraw(plots.input.path, line, newControllerData, dat);
-        redraw(plots.input.area, area, newControllerData, dat);
-
-        redraw(plots.setpoint.path, line, newControllerData, dat);
-
-        redraw(plots.pid.p, line, newControllerData, dat);
-        redraw(plots.pid.i, line, newControllerData, dat);
-        redraw(plots.pid.d, line, newControllerData, dat);
-
-        redraw(plots.output.path, line, newControllerData, dat);
-        redraw(plots.output.area, area, newControllerData, dat);
-
-        // pop the old data point off the front
-        // for (var key in data) {
-        //     data[key].shift();
-        // }
-        data["input"].shift();
-        data["output"].shift();
-        data["setpoint"].shift();
-
-        data["pid"][0].shift();
-        data["pid"][1].shift();
-        data["pid"][2].shift();
+        // TODO rename function
+        updateData(dat);
     }
+}
+
+function send_new_controller_parameters() {
+    socket.emit('new_controller_parameters', current_controller);
 }
 
 function updateConnectionsAvailable(conns) {

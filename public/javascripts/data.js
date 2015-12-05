@@ -8,8 +8,19 @@ var data = {
     output: new Array(40).fill(0),
     setpoint: new Array(40).fill(0),
     // TODO bad idea:
-    pid: [new Array(40).fill(0), new Array(40).fill(0), new Array(40).fill(0)]
+    pid: [new Array(40).fill(0), new Array(40).fill(0), new Array(40).fill(0)],
+
+    get_curr_values: function () {
+        return {
+            input: data.input[n-1],
+            output: data.output[n-1],
+            setpoint: data.setpoint[n-1],
+            pid: [data.pid[0][n-1], data.pid[1][n-1], data.pid[2][n-1]]
+        }
+    }
 };
+
+var current_controller = null;
 
 var margin = {
         top: 20,
@@ -86,6 +97,103 @@ function set_axes(svg) {
         .call(d3.svg.axis().scale(y).orient("left"));
 }
 
+function calculate_new_value(pos, incr) {
+    if (current_controller === null ) {
+        current_controller = data.get_curr_values();
+    }
+
+    current_controller.pid[pos] += incr;
+}
+
+$("body").keydown(function(e) {
+    // Source: https://css-tricks.com/row-and-column-highlighting/
+    switch (e.which) {
+        case 13: // Enter
+            e.preventDefault();
+            // TODO
+            send_new_controller_parameters();
+            break;
+        case 85: // P UP
+            $("#pid_table .up td:nth-of-type(1)").toggleClass("hover");
+            calculate_new_value(0, 1);
+            $("#pid_table #pid_new_values td:nth-of-type(1)").text(current_controller.pid[0]);
+            break;
+        case 73: // I UP
+            $("#pid_table .up td:nth-of-type(2)").toggleClass("hover");
+            calculate_new_value(1, 1);
+            $("#pid_table #pid_new_values td:nth-of-type(2)").text(current_controller.pid[1]);
+            break;
+        case 79: // D UP
+            $("#pid_table .up td:nth-of-type(3)").toggleClass("hover");
+            calculate_new_value(2, 1);
+            $("#pid_table #pid_new_values td:nth-of-type(3)").text(current_controller.pid[2]);
+            break;
+        case 74: // P DOWN
+            $("#pid_table .down td:nth-of-type(1)").toggleClass("hover");
+            calculate_new_value(0, -1);
+            $("#pid_table #pid_new_values td:nth-of-type(1)").text(current_controller.pid[0]);
+            break;
+        case 75: // I DOWN
+            $("#pid_table .down td:nth-of-type(2)").toggleClass("hover");
+            calculate_new_value(1, -1);
+            $("#pid_table #pid_new_values td:nth-of-type(2)").text(current_controller.pid[1]);
+            break;
+        case 76: // D DOWN
+            $("#pid_table .down td:nth-of-type(3)").toggleClass("hover");
+            calculate_new_value(2, -1);
+            $("#pid_table #pid_new_values td:nth-of-type(3)").text(current_controller.pid[2]);
+            break;
+    }
+});
+
+$("body").keyup(function(e) {
+    // Source: https://css-tricks.com/row-and-column-highlighting/
+    $("#pid_table td").removeClass("hover");
+});
+
+function updateUI(dat) {
+    $("#pid_curr_values label.p").text(data.pid[0][n - 1]);
+    $("#pid_curr_values label.i").text(data.pid[1][n - 1]);
+    $("#pid_curr_values label.d").text(data.pid[2][n - 1]);
+
+    // redraw the line, and then slide it to the left
+    redraw(plots.input.path, line, newControllerData, dat);
+    redraw(plots.input.area, area, newControllerData, dat);
+
+    redraw(plots.setpoint.path, line, newControllerData, dat);
+
+    redraw(plots.pid.p, line, newControllerData, dat);
+    redraw(plots.pid.i, line, newControllerData, dat);
+    redraw(plots.pid.d, line, newControllerData, dat);
+
+    redraw(plots.output.path, line, newControllerData, dat);
+    redraw(plots.output.area, area, newControllerData, dat);
+}
+
+function updateData(dat) {
+    data.input.push(dat.message.input);
+    data.output.push(dat.message.output);
+    data.setpoint.push(dat.message.setpoint);
+
+    // TODO CTRL+C - CTRL+V is bad anywhere
+    data.pid[0].push(dat.message.pid[0]);
+    data.pid[1].push(dat.message.pid[1]);
+    data.pid[2].push(dat.message.pid[2]);
+
+    updateUI(dat);
+
+    // pop the old data point off the front
+    // for (var key in data) {
+    //     data[key].shift();
+    // }
+    data["input"].shift();
+    data["output"].shift();
+    data["setpoint"].shift();
+
+    data["pid"][0].shift();
+    data["pid"][1].shift();
+    data["pid"][2].shift();
+}
 $(document).ready(function() {
     // TODO generator function to svgs and paths
     // -improved with new_svg()-
@@ -116,7 +224,7 @@ $(document).ready(function() {
         .attr("d", line)
         .attr('stroke', 'red');
     set_axes(svgs.input);
-    
+
     svgs.output = new_svg(".plot #output")
 
     plots.output = {};
