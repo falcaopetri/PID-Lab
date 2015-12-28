@@ -1,12 +1,12 @@
 extends layout
 
 append styles
-	// Custom styles for this template
+	//- Custom styles for this template
 	link(href='/@jade-bootstrap/css/dashboard.css', rel='stylesheet')
 	link(href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css", rel="stylesheet")
 
 append scripts
-	// TODO should split up this scripts, so they are included where really needed
+	//- TODO should split up this scripts, so they are included where really needed
 	script(src="https://cdn.socket.io/socket.io-1.3.7.js")
 	script(src="/javascripts/connection.js")
 	script(src="http://d3js.org/d3.v3.js")
@@ -21,7 +21,8 @@ block sidebar
 				li.overview
 					a(href='#', class="disabled").connected Overview
 				li.analytics
-					a(href='#', class="disabled").connected#analytics_btn Analytics
+					//- TODO Not implemented
+					a(href='#', class="disabled")#analytics_btn Analytics
 					include analytics
 				li
 					a(href='#', class="disabled").connected Export

@@ -93,10 +93,11 @@ $('#refresh').on('click', function() {
     request_connections_available();
 });
 
-$('#analytics_btn').on('click', function() {
-    $('#analytics').toggleClass("disabled");
-    $('li.analytics').toggleClass("active");
-});
+// TODO NOT IMPLEMENTED
+// $('#analytics_btn').on('click', function() {
+//     $('#analytics').toggleClass("disabled");
+//     $('li.analytics').toggleClass("active");
+// });
 
 function request_overview_page() {
     $('#conns').toggleClass("disabled");
