@@ -1,6 +1,9 @@
 # CSS - since it's autogenerate through styl
 *.css
 
+# Symlinks managed by Slinker
+@*
+
 # Logs
 logs
 *.log

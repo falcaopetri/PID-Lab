@@ -15,3 +15,16 @@ slinker.link({
         console.log('Oh no, my modules aren\'t linked!');
     }
 });
+
+slinker.link({
+    modules: ['jade-bootstrap'],
+    modulesBasePath: path.join(__dirname, '../node_modules'),
+    symlinkPrefix: '@',
+    nodeModulesPath: path.join(__dirname, '../public'),
+    onComplete: function() {
+        console.log('Yay, my modules are linked!');
+    },
+    onError: function(error) {
+        console.log('Oh no, my modules aren\'t linked!');
+    }
+});
