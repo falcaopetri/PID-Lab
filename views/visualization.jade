@@ -1,48 +1,59 @@
 //- append scripts
 //-     script(src="http://d3js.org/d3.v3.js")
 //-     script(src="/javascripts/data.js")
-        
+.info
+	h4(class="sub-header") Connection Info
+
+	div(class="table-responsive")#connection_info
+		table(class="table table-bordered table-condensed table-nonfluid")
+			tr#connection_name
+				th(scope="row") Connection name:
+				td
+			tr#active_connections_counter
+				th(scope="row") Active connections counter:
+				td
+
 .plot
-    #input
-        h4(class="sub-header") Input
-    #output
-        h4(class="sub-header") Output
-    #pid
-        h4(class="sub-header") PID
-    #parameters_controller
-        h4(class="sub-header") Parameters Controller
-        
-        div(class="table-responsive")
-            table(class="table table-bordered")#pid_table
-                tr
-                    th P
-                    th I
-                    th D
-                tr#pid_curr_values
-                    td
-                        label.p
-                    td
-                        label.i
-                    td
-                        label.d
-                tr#pid_new_values
-                    td
-                        label.p
-                    td
-                        label.i
-                    td
-                        label.d
-                tr.up
-                    td
-                        i(class="fa fa-arrow-circle-up fa-3x")
-                    td
-                        i(class="fa fa-arrow-circle-up fa-3x")
-                    td
-                        i(class="fa fa-arrow-circle-up fa-3x")
-                tr.down
-                    td
-                        i(class="fa fa-arrow-circle-down fa-3x")
-                    td
-                        i(class="fa fa-arrow-circle-down fa-3x")
-                    td
-                        i(class="fa fa-arrow-circle-down fa-3x")
+	#input
+		h4(class="sub-header") Input
+	#output
+		h4(class="sub-header") Output
+	#pid
+		h4(class="sub-header") PID
+	#parameters_controller
+		h4(class="sub-header") Parameters Controller
+
+		div(class="table-responsive")
+			table(class="table table-bordered")#pid_table
+				tr
+					th P
+					th I
+					th D
+				tr#pid_curr_values
+					td
+						label.p
+					td
+						label.i
+					td
+						label.d
+				tr#pid_new_values
+					td
+						label.p
+					td
+						label.i
+					td
+						label.d
+				tr.up
+					td
+						i(class="fa fa-arrow-circle-up fa-3x")
+					td
+						i(class="fa fa-arrow-circle-up fa-3x")
+					td
+						i(class="fa fa-arrow-circle-up fa-3x")
+				tr.down
+					td
+						i(class="fa fa-arrow-circle-down fa-3x")
+					td
+						i(class="fa fa-arrow-circle-down fa-3x")
+					td
+						i(class="fa fa-arrow-circle-down fa-3x")

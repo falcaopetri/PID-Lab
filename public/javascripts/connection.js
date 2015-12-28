@@ -1,5 +1,6 @@
 var socket = io.connect("http://localhost:8000");
 var request_pending = false;
+var connection;
 
 socket.on("connect", function() {
     console.log("Connected!");
@@ -60,8 +61,12 @@ function updateConnectionsAvailable(conns) {
 };
 
 function connect(connName, connect_btn) {
+    connection = {
+            connName: connName
+    };
+    
     // TODO connect_btn
-    console.log(connName);
+
     socket.emit("request_connection", {
         "connName": connName
     }, function(success) {
@@ -100,6 +105,8 @@ $('#refresh').on('click', function() {
 // });
 
 function request_overview_page() {
+    $('#connection_info #connection_name td').text(connection.connName);
+
     $('#conns').toggleClass("disabled");
     $('#overview').toggleClass("disabled");
 
