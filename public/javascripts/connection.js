@@ -62,9 +62,9 @@ function updateConnectionsAvailable(conns) {
 
 function connect(connName, connect_btn) {
     connection = {
-            connName: connName
+        connName: connName
     };
-    
+
     // TODO connect_btn
 
     socket.emit("request_connection", {
@@ -86,8 +86,7 @@ function loading_anim() {
     if (request_pending) {
         $('#refresh').addClass('active');
         $('#conns_avail > tbody').addClass('disabled');
-    }
-    else {
+    } else {
         $('#refresh').removeClass('active');
         $('#refresh').blur();
         $('#conns_avail > tbody').removeClass('disabled');
@@ -116,7 +115,19 @@ function request_overview_page() {
     $('.overview').toggleClass("active");
 
     $('.connected').toggleClass("disabled");
+
+    $('#views_selector').toggleClass("disabled");
 }
+
+$(document).ready(function() {
+    $("#views_selector .btn").each(function(index) {
+        var div_name = $(this).text().trim().toLowerCase().replace(" ", "_");
+
+        $(this).click(function() {
+            $(".plot #" + div_name).toggle();
+        });
+    });
+});
 
 function request_connections_available() {
     if (!request_pending) {

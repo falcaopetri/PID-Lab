@@ -243,7 +243,7 @@ $(document).ready(function() {
         .attr('stroke', 'black');
     set_axes(svgs.output);
 
-    svgs.pid = new_svg(".plot #pid");
+    svgs.pid = new_svg(".plot #pid_parameters");
 
     plots.pid = {};
     plots.pid.top = svgs.pid.append("g")

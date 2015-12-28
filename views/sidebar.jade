@@ -1,0 +1,14 @@
+.row
+	.col-sm-3.col-md-2.sidebar
+		ul.nav.nav-sidebar
+			li.active.connect
+				a(href='#').connect Connection
+			li.overview
+				a(href='#', class="disabled").connected Overview
+				include views_selector
+			li.analytics
+				//- TODO Not implemented
+				a(href='#', class="disabled")#analytics_btn Analytics
+				//- include analytics
+			li
+				a(href='#', class="disabled").connected Export
