@@ -7,8 +7,14 @@ socket.on("connect", function() {
 
     socket.on('update_connections_available', updateConnectionsAvailable);
     socket.on('new_controller_data', newControllerData);
+    socket.on('update_conn_info', updateConnInfo);
     request_connections_available();
 });
+
+function updateConnInfo(conn_info) {
+    $('#connection_info #connection_name td').text(conn_info.connName);
+    $('#connection_info #active_connections_counter td').text(conn_info.counter);
+}
 
 function newControllerData(dat) {
     // push a new data point onto the back
@@ -69,15 +75,16 @@ function connect(connName, connect_btn) {
 
     socket.emit("request_connection", {
         "connName": connName
-    }, function(success) {
-        if (success) {
-            console.log("successful connection");
-            request_overview_page();
-            socket.emit('subscribe', connName);
-        } else {
+    }, function(err) {
+        if (err) {
             // problem connecting
             console.error("connection failed");
+        } else {
+            console.log("successful connection");
+            setUIState("connected");
+            socket.emit('subscribe', connName);
         }
+
         $(connect_btn).toggleClass('active');
     });
 }
@@ -97,6 +104,30 @@ $('#refresh').on('click', function() {
     request_connections_available();
 });
 
+$('#disconnect_btn').on('click', function() {
+    disconnect();
+});
+
+function disconnect() {
+    // TODO clear data plots - getting ghost data
+    console.log("#disconnect");
+    // TODO check if is connected
+    socket.emit("request_disconnection", null, function(data) {
+        // TODO callback
+
+        // change UI to disconnected state
+        setUIState("disconnected");
+    });
+}
+
+function setUIState(state) {
+    // TODO should treat this more carefully
+    if (state === "connected") {
+        request_overview_page();
+    } else if (state === "disconnected") {
+        request_overview_page();
+    }
+}
 // TODO NOT IMPLEMENTED
 // $('#analytics_btn').on('click', function() {
 //     $('#analytics').toggleClass("disabled");
@@ -104,8 +135,6 @@ $('#refresh').on('click', function() {
 // });
 
 function request_overview_page() {
-    $('#connection_info #connection_name td').text(connection.connName);
-
     $('#conns').toggleClass("disabled");
     $('#overview').toggleClass("disabled");
 
