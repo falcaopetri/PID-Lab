@@ -1,6 +1,7 @@
 var socket = io.connect("http://localhost:8000");
 var request_pending = false;
 var connection;
+var lastFrame;
 
 socket.on("connect", function() {
     console.log("Connected!");
@@ -8,8 +9,34 @@ socket.on("connect", function() {
     socket.on('update_connections_available', updateConnectionsAvailable);
     socket.on('new_controller_data', newControllerData);
     socket.on('update_conn_info', updateConnInfo);
+    socket.on('update_frame', updateFrame);
+
     request_connections_available();
 });
+
+function blobToImage(imageData) {
+    if (Blob && 'undefined' != typeof URL) {
+        var blob = new Blob([imageData], {
+            type: 'image/png'
+        });
+        return URL.createObjectURL(blob);
+    } else if (imageData.base64) {
+        return 'data:image/png;base64,' + imageData.data;
+    } else {
+        return 'about:blank';
+    }
+}
+
+function updateFrame(data) {
+    if (lastFrame && 'undefined' != typeof URL) {
+        URL.revokeObjectURL(lastFrame);
+    }
+
+    var imageURL = blobToImage(data.buffer);
+    console.log(imageURL);
+    $("#live_streaming img")[0].src = imageURL;
+    lastFrame = imageURL;
+}
 
 function updateConnInfo(conn_info) {
     $('#connection_info #connection_name td').text(conn_info.connName);
@@ -83,6 +110,8 @@ function connect(connName, connect_btn) {
             console.log("successful connection");
             setUIState("connected");
             socket.emit('subscribe', connName);
+            // TODO only subscribe if live streaming View is active
+            socket.emit("request_live_streaming");
         }
 
         $(connect_btn).toggleClass('active');
@@ -113,6 +142,9 @@ function disconnect() {
     console.log("#disconnect");
     // TODO check if is connected
     socket.emit("request_disconnection", null, function(data) {
+        // TODO WHEN and WHERE should this be invoked?
+        socket.emit("stop_live_streaming");
+
         // TODO callback
 
         // change UI to disconnected state

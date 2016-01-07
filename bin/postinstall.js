@@ -4,7 +4,7 @@ var slinker = require('slinker'),
     path = require('path');
 
 slinker.link({
-    modules: ['config', 'connection', 'pidController', 'socket'],
+    modules: ['config', 'connection', 'pidController', 'socket', 'camStream'],
     modulesBasePath: path.join(__dirname, '../lib'),
     symlinkPrefix: '@',
     nodeModulesPath: path.join(__dirname, '../node_modules'),
