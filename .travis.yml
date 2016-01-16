@@ -2,6 +2,9 @@ language: node_js
 node_js:
     - "stable"
 
+script:
+    - "npm test || grep -q \"failing\" && exit 1"
+
 after_success:
     - npm run cover
     - "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
