@@ -16,6 +16,27 @@
 					li
 						a(href='#').disabled Settings
 					li
-						a(href='#') About
+						a(href='#', data-toggle="modal",data-target="#aboutModal") About
 					li
-						a(href='#') Help
+						a(href='https://pidlab.readme.io/docs', target='_blank') Help
+						
+	+modal("About PID Lab", "aboutModal")
+		p 
+			| The PID Lab is the result of a Scientific Research that took place at 
+			a(href="http://www.ufscar.br/", target="_blank") UFSCar
+			| , São Carlos, Brazil.
+		p Get to know the project!
+		
+		br
+		
+		p.col-md-4
+			i(class="fa fa-fw fa-github")
+			a(href="https://github.com/falcaopetri/pid-lab", target="_blank") GitHub
+		p.col-md-4
+			i(class="fa fa-fw fa-book")
+			a(href="https://pidlab.readme.io/docs", target="_blank") Docs
+		p.col-md-4
+			i(class="fa fa-fw fa-question-circle")
+			a(href="https://pidlab.readme.io/discuss", target="_blank") Support
+			
+		br
